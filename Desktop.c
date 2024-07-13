@@ -155,33 +155,46 @@ int test(int argc, char** argv)
     FILE* fp;
     FILE* fr;
     FILE* fr2;
+
+    //Initialize the peripherals
     Init_UART();
     Init_libMPSSE();
     handle = Init_SPI();
+
+    // Open the csv file to record position feedback
     fopen_s(&fp, "data.csv", "w+");
+    // Read txt data
     fopen_s(&fr, "EnginePattern_raster_amp3_res512_hexadecimal_downsample.txt", "r");
-    fopen_s(&fr2, "EnginePattern_raster_amp3_res512_hexadecimal_downsample.txt", "r");
 
     FT_STATUS status;
     bool status2;
     DWORD bytesRead;
     DWORD bytesWrite;
+    //StartByte is used for FSM
     UCHAR StartByte = 1;
+    //Receive a byte from STM32 every time it completes SAI transmission of chunk
     UCHAR RxByte;
 
     DWORD transferCount = 0;
     LPDWORD ptransferCount = &transferCount;
     DWORD options = SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES | SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE | SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
-    //Write how many trials user want
+    
+    //Match this count with STM32
     int COUNT = 320;
-    //Write how many positions user want inside a buffer
-    int NUM_OF_POSITIONS = 6264 * 8;
-    DWORD input_data[2 * 6264 * 8];
-    //Write how many bytes user want inside a buffer (4 * NUM_OF_POSITIONS)
-    UCHAR tx_buffer[2 * 4 * 6264 * 8];
-    //Write how many bytes user want to transmit & receive a time (2 * NUM_OF_POSITIONS)
-    int NUM_OF_BYTES_PER_CHUNK = 12528;
-    UCHAR rx_buffer[12528];
+    int CHUNK_NUM = 32;
+    int CHUNK_NUM_CURRENT = 0;
+    //Write the number of positions per chunk
+    int NUM_OF_POSITIONS_PER_CHUNK = 3132;
+    
+    //The number of positions inside full scan pattern
+    DWORD input_data[CHUNK_NUM * NUM_OF_POSITIONS_PER_CHUNK];
+    
+    //The number of bytes inside full scan pattern
+    UCHAR tx_buffer[4 * CHUNK_NUM * NUM_OF_POSITIONS_PER_CHUNK];
+    
+    //The number of bytes per chunk
+    int NUM_OF_BYTES_PER_CHUNK = 4 * NUM_OF_POSITIONS_PER_CHUNK;
+    UCHAR rx_buffer[4 * NUM_OF_POSITIONS_PER_CHUNK];
 
     int x;
     int y;
@@ -192,10 +205,10 @@ int test(int argc, char** argv)
     printf("sent");
     status = ReadFile(hComm, &RxByte, 1, &bytesRead, NULL);
     printf("%d \n", RxByte);
-    for (int k = 0; k < 2 * NUM_OF_POSITIONS; ++k) {
+    for (int k = 0; k < CHUNK_NUM * NUM_OF_POSITIONS_PER_CHUNK; ++k) {
         fscanf_s(fr, "%x", &input_data[k]);
     }
-    for (int k = 0; k < 2 * NUM_OF_POSITIONS; ++k) {
+    for (int k = 0; k < CHUNK_NUM * NUM_OF_POSITIONS_PER_CHUNK; ++k) {
         uint32_t data = input_data[k];
         tx_buffer[4 * k + 3] = (uint8_t)((data >> 24) & 0xFF);
         tx_buffer[4 * k + 2] = (uint8_t)((data >> 16) & 0xFF);
@@ -208,29 +221,15 @@ int test(int argc, char** argv)
         Sleep(1);
         status = SPI_Read(handle, &rx_buffer[0], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
         Sleep(1);
-
-        //if (i % 4 == 0) {
-        //    status = SPI_Write(handle, &tx_buffer[0], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
-        //}
-        //else if (i % 4 == 1) {
-        //    status = SPI_Write(handle, &tx_buffer[NUM_OF_BYTES_PER_CHUNK], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
-        //}
-        //else if (i % 4 == 2) {
-        //    status = SPI_Write(handle, &tx_buffer[2 * NUM_OF_BYTES_PER_CHUNK], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
-        //}
-        //else if (i % 4 == 3) {
-        //    status = SPI_Write(handle, &tx_buffer[3 * NUM_OF_BYTES_PER_CHUNK], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
-        //}
         
-        CHUNK_NUM = i % 32;
-        status = SPI_Write(handle, &tx_buffer[CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
+        CHUNK_NUM_CURRENT = i % CHUN_NUM;
+        status = SPI_Write(handle, &tx_buffer[CHUNK_NUM_CURRENT * NUM_OF_BYTES_PER_CHUNK], NUM_OF_BYTES_PER_CHUNK, ptransferCount, options);
         if (i < COUNT - 1) {
             status2 = ReadFile(hComm, &RxByte, 1, &bytesWrite, NULL);
         }
         for (int j = 0; j < sizeof(rx_buffer); j += 4) {
             x = rx_buffer[j + 3] * 256 + rx_buffer[j + 2];
             y = rx_buffer[j + 1] * 256 + rx_buffer[j];
-            //fprintf(fp, "y:%d x:%d ,", y, x);
             fprintf(fp, "%d,%d,", x, y);
         }
         fprintf(fp, "\n");
