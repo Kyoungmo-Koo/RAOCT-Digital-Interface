@@ -23,6 +23,6 @@ Then, check if we have our txt file that we will use, is at the right place so t
 
 6. Now we will run the code. First, run STM32.c. When it is complete, run Desktop.c. Press "0" and ENTER key, then you will see "sent" on Debug console. Now, run oct.py code and press "start" on User Interface.
    
-7. Finally, scan image will appear on the screen. 
+7. Finally, scan image will appear on the screen. When scan is complete, open data.csv file that contains information of position feedback from servo driver.
 
     
