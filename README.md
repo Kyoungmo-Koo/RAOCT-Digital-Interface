@@ -6,13 +6,9 @@ Software Setup:
    
 2. Count the number of lines in txt, and put numbers in STM32.c code, following the comments.
    
-   For instance, RasterScan pattern which with Resolution of 512 * 512 and amplitude of 3 will has 100224 positions.
-   Let's say we are dividing those positions into 32 chunks. So one chunk will have 3132 positions. For STM32, it is capable of containing two chunks inside the buffer, so that it can use TxCpltCallback and TxHalfCpltCallback functions. So number of positions would be 2 * 3132 = 6264
-   (Check EnginePattern_amp3_res512_hexadecimal_downsample.txt file)
-   NUM_OF_POSITIONS = 6264
-   NUM_OF_POSITIONS_PER_CHUNK = 6264 / 2 = 3132;
-   NUM_OF_BYTES_PER_CHUNK = 6264 * 2 = 12528;
-   Configure the size of txData and rxData as 6264.
+   For instance, RasterScan pattern which with Resolution of 512 * 512 and amplitude of 1 will has 83840 positions.
+   Let's say we are dividing those positions into 32 chunks. So one chunk will have 2620 positions. SCAN_LENGTH should be 2620 for this case.
+   SCAN_LENGTH = (Number of positions) / CHUNK_NUM
 
 4. Now, STM32 software setup is complete. Let's setup Desktop.c code.
   Check if we have "ftd2xx.h", "libmpsse_spi.h", "Windows.h" files at correct place. Also, D2xx driver should be installed in computer. These are mandatory to use FTDI USB2SPI cable.
