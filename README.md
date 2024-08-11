@@ -23,3 +23,4 @@ Then, check if we have our txt file that we will use, is at the right place so t
 8. Finally, scan image will appear on the screen. When scan is complete, open data.csv file that contains information of position feedback from servo driver.
 
     
+When .bin file is collected via analog interface and csv file is collected via digital interface, Analog_Digital_Position_Feedback_Analysis.ipynb can be used to compare two interfaces
