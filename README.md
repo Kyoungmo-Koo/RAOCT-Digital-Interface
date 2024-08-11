@@ -1,4 +1,4 @@
-# RACOCT_Digital_Interface
+# RAOCT_Digital_Interface
 
 Software Setup:
 
