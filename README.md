@@ -1,5 +1,7 @@
 # RAOCT_Digital_Interface
 
+Before software setup, we have to generate txt file that contains positions for digital interface. We will use generate_digital_positions.py to do this. generate_digital_positions.py should follow oct_digital.py setup to generate positions that can work same as analog interface except downsampling.
+
 Software Setup:
 
 1. First, please bring in the txt file that has one position per line. And that line should contain 8 hexadecimal numbers. (First 4 hexadecimal numbers : X position, Last 4 hexadecimal numbers : Y position)
