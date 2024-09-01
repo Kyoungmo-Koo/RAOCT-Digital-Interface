@@ -222,8 +222,8 @@ int test(int argc, char** argv)
     }
     for (int k = 0; k < CHUNK_NUM * NUM_OF_POSITIONS_PER_CHUNK; ++k) {
         uint32_t data = input_data[k];
-        tx_buffer2[2 * k] = (uint16_t)((data >> 16) & 0xFF);
-        tx_buffer2[2 * k + 1] = (uint16_t)(data & 0xFF);
+        tx_buffer2[2 * k] = (uint16_t)((data >> 16) & 0xFFFF);
+        tx_buffer2[2 * k + 1] = (uint16_t)(data & 0xFFFF);
     }
     status = SPI_Write(handle, &tx_buffer[0], NUM_OF_BYTES_PER_CHUNK * 2, ptransferCount, options);
 
