@@ -269,7 +269,9 @@ int test(int argc, char** argv)
                 tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + 1 + j / 2] = 
                     tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] - (y - original_y);
 
-                int number = (COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_BYTES_PER_CHUNK + j + CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK - 20) % (CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK);
+                int number = (COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_BYTES_PER_CHUNK + j + CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK - 20) 
+                    % (CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK);
+                
                 tx_buffer[number] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] % 256;
                 tx_buffer[number + 1] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] / 256;
                 tx_buffer[number + 2] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] % 256;
