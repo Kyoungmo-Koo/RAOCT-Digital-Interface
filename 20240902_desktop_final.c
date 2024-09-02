@@ -263,8 +263,11 @@ int test(int argc, char** argv)
                 original_x = (uint16_t)((data >> 16) & 0xFFFF);
                 original_y = (uint16_t)(data & 0xFFFF);
 
-                tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] - (x - original_x);
-                tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + 1 + j / 2] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] - (y - original_y);
+                tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] = 
+                    tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] - (x - original_x);
+                
+                tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + 1 + j / 2] = 
+                    tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] - (y - original_y);
 
                 int number = (COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_BYTES_PER_CHUNK + j + CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK - 20) % (CHUNK_NUM * NUM_OF_BYTES_PER_CHUNK);
                 tx_buffer[number] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2 + 1] % 256;
@@ -273,7 +276,8 @@ int test(int argc, char** argv)
                 tx_buffer[number + 3] = tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2] / 256;
             }
             fprintf(fp, "%d,%d,", x, y);
-            fprintf(fp2, "%d,%d,", tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2], tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + 1 + j / 2]);
+            fprintf(fp2, "%d,%d,", tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + j / 2], 
+                tx_buffer2[COMPARISON_CHUNK_NUM_CURRENT * NUM_OF_POSITIONS_PER_CHUNK * 2 + 1 + j / 2]);
         }
         fprintf(fp, "\n");
         fprintf(fp2, "\n");
